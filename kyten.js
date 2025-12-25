@@ -186,6 +186,27 @@ function previewSignature(sizePercent) {
   signatureImage.ondragstart = () => false;
 }
 
+function getName() {
+  var urlString = window.location.href;
+  var url = new URL(urlString);
+  var nameValue = url.searchParams.get("n");
+  const newName = String(nameValue);
+
+  let setName = name;
+  if (nameValue !== null) {
+    let str = decodeURIComponent(newName);
+    if (str.includes("%20")) {
+      let str = str.replace(/%20/g, " ");
+      setName = str;
+    } else {
+      setName = str;
+    }
+  } else {
+    setName = name;
+  }
+  return setName;
+}
+
 function saveSignature(userId, userCard, scale) {
   const confirmSave = confirm("Bạn có chắc chắn muốn ký và lưu không?");
   if (!confirmSave) return;
@@ -227,12 +248,12 @@ function saveSignature(userId, userCard, scale) {
   const signatureData = exportCanvas.toDataURL("image/png");
 
   const GOOGLE_SCRIPT_URL_CHU_KY =
-    "https://script.google.com/macros/s/AKfycbwrS8Y4NcDBCqZ_t97MNb1sVacGxLNVWQhUu6q2sAyO8hzKhSsM7-6DcnYpfUIMdhP3vw/exec";
+    "https://script.google.com/macros/s/AKfycbxppHSVbotRJdXPigK1ciRdVF43fotyDD2Cs_wPvWjmZwnY618QugSXe28RwcTHUv6J/exec";
 
   const data = {
     signature: signatureData,
     idUser: generateId(),
-    userCard: userCard,
+    userCard: getName() || userCard,
     x: posX,
     y: posY,
     formType: "ChuKy",
